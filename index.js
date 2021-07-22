@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const connexion = require('./routes/Connexion');
 const inscription = require('./routes/Inscription');
+const account = require('./routes/Account');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(
 
 app.use('/', connexion);
 app.use('/', inscription);
+app.use('/', account);
 
 const PORT = process.env.PORT || 8000;
 

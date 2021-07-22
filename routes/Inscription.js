@@ -1,10 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const pool = require('./config/mysql2');
+const pool = require('../config/mysql');
 
 const router = express.Router();
 
-router.post('/inscription', (request, response) => {
+router.post('/', (request, response) => {
   const { email, password } = request.body;
   if (!email || !password) {
     response.status(403).send('Email or password missing');
