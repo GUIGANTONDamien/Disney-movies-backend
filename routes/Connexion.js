@@ -13,24 +13,28 @@ router.post('/connexion', (request, response) => {
       .send('Veuillez saisir votre mot de passe ou votre email');
   } else {
     pool.query(
-      'SELECT * FROM user WHERE email = ?',
+      'SELECT * FROM user WHERE email = ? LIMIT 1',
       [email],
       (error, results) => {
+        console.log(error, results);
         if (error) {
           response.status(500).send(error);
         } else if (results.length === 0) {
           response.status(403).send(`invalid email`);
         } else {
+          console.log(results[0].password);
           bcrypt.compare(
             password,
             results[0].password,
             (error, responseCrypted) => {
+              console.log(error, responseCrypted);
               if (responseCrypted) {
                 const user = {
                   id: results[0].id,
                   email: results[0].email,
                 };
-                response.status(200).send({ user });
+                console.log(user);
+                response.send(user);
               } else if (error) {
                 response.send(error);
               } else {
@@ -42,6 +46,20 @@ router.post('/connexion', (request, response) => {
       }
     );
   }
+});
+
+router.get('/connexion/:id', (request, response) => {
+  const { id } = request.params;
+  pool.query('SELECT * FROM user WHERE id = ?', id, (error, results) => {
+    console.log(error, results);
+    if (error) {
+      response.status(500).send(error);
+    } else if (results.length === 0) {
+      response.status(403).send('account not exist');
+    } else {
+      response.status(200).send(results[0]);
+    }
+  });
 });
 
 module.exports = router;
